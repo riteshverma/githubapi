@@ -13,7 +13,7 @@ public class InMemoryEventRepository implements EventRepository {
 
     /** Persist a new Event, assigning it a unique ID */
     public Event save(Event event) {
-        event.setId(Integer.valueOf(idCounter.getAndIncrement()));
+        event.setId(idCounter.getAndIncrement());
         events.add(event);
         return event;
     }
