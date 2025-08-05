@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RestController
-@RequestMapping("/events")
+//@RequestMapping("/events")
 public class EventController {
 
     private static final List<String> VALID_TYPES =
@@ -19,25 +19,28 @@ public class EventController {
         this.repository = repository;
     }
 
-    @PostMapping
+    @PostMapping("/events")
     public ResponseEntity<?> createEvent(@RequestBody Event event) {
+        ResponseEntity<?> result;
         if (!VALID_TYPES.contains(event.getType())) {
-            return ResponseEntity
+            result = ResponseEntity
                     .badRequest()
                     .body("Invalid event type: " + event.getType());
+        } else {
+            Event saved = repository.save(event);
+            result = ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(saved);
         }
-        Event saved = repository.save(event);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(saved);
+        return result;
     }
 
-    @GetMapping
+    @GetMapping("/events")
     public List<Event> getAllEvents() {
         return repository.findAll();
     }
 
-    @GetMapping("/{eventId}")
+    @GetMapping("/events/{eventId}")
     public ResponseEntity<Event> getEventById(@PathVariable Integer eventId) {
         return repository.findById(eventId)
                 .map(ResponseEntity::ok)
